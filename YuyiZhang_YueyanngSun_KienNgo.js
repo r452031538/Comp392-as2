@@ -4,7 +4,7 @@ const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerH
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var controls,
-    cubes = []
+    boxes = []
 
 function init() {
 
@@ -54,16 +54,16 @@ function createGeometry() {
     plane.__dirtyPosition = true;
     scene.add(plane);
 
-    cubes.push(createPhysicsObject(-2,0,0,"r"));
-    cubes.push(createPhysicsObject(-0.67,0,0,"r"));
-    cubes.push(createPhysicsObject(0.67,0,0,"r"));
-    cubes.push(createPhysicsObject(2,0,0,"r"));
-    cubes.push(createPhysicsObject(-1.33,1,0,"r"));
-    cubes.push(createPhysicsObject(0,1,0,"r"));
-    cubes.push(createPhysicsObject(1.33,1,0,"b"));
-    cubes.push(createPhysicsObject(-0.67,2,0,"b"));
-    cubes.push(createPhysicsObject(0.67,2,0,"b"));
-    cubes.push(createPhysicsObject(0,3,0,"y"));
+    createPhysicsObject(-2,0,0,"r");
+    createPhysicsObject(-0.67,0,0,"r");
+    createPhysicsObject(0.67,0,0,"r");
+    createPhysicsObject(2,0,0,"r");
+    createPhysicsObject(-1.33,1,0,"r");
+    createPhysicsObject(0,1,0,"r");
+    createPhysicsObject(1.33,1,0,"b");
+    createPhysicsObject(-0.67,2,0,"b");
+    createPhysicsObject(0.67,2,0,"b");
+    createPhysicsObject(0,3,0,"y");
 }
 
 
@@ -88,9 +88,9 @@ function createGeometry() {
     box.position.set(x, y, z);
     box.castShadow = true;
     box.receiveShadow = true;
-    box.__dirtyRotation = true;
+    box.__dirtyRotation = true; 
+    boxes.push(box);
     scene.add(box);
-    return box;
 }
 
 function readFile(port, filename) {
@@ -114,10 +114,10 @@ function onDocumentMouseDown( event ) {
     event.preventDefault();
     mouse.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1 );
     raycaster.setFromCamera( mouse, camera );
-    var intersects = raycaster.intersectObjects(cubes);
+    var intersects = raycaster.intersectObjects(boxes);
 
     if ( intersects.length > 0 ) {
-        scene.remove( intersect.object );
+        scene.remove(intersects[0].object);
     }
 }
 
