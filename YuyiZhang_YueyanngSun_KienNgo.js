@@ -1,5 +1,5 @@
-//Physijs.scripts.worker = 'libs/physijs_worker.js';
-//Physijs.scripts.ammo = 'libs/ammo.js';
+Physijs.scripts.worker = 'libs/physijs_worker.js';
+Physijs.scripts.ammo = 'ammo.js';
 
 const renderer = new THREE.WebGLRenderer();
 const scene = new Physijs.Scene();
@@ -56,6 +56,8 @@ function createGeometry() {
     plane.receiveShadow = true;
     plane.__dirtyPosition = true;
     scene.add(plane);
+
+    createPhysicsObject(1,2,3);
 
     readFile(port, this.filename);
 }
