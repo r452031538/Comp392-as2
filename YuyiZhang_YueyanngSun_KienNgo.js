@@ -1,10 +1,14 @@
+//Physijs.scripts.worker = 'libs/physijs_worker.js';
+//Physijs.scripts.ammo = 'libs/ammo.js';
+
 const renderer = new THREE.WebGLRenderer();
 const scene = new Physijs.Scene();
 const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1.0, 1000);
 var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var controls,
-    boxes = []
+    boxes = [],
+    score=0;
 
 function init() {
 
@@ -44,9 +48,6 @@ function setupCameraAndLight() {
 }
 
 function createGeometry() {
-
-    scene.add(new THREE.AxesHelper(100));
-
     var mat = Physijs.createMaterial(new THREE.MeshLambertMaterial({ color: 0xffffff }));
     var plane = new Physijs.BoxMesh (new THREE.BoxGeometry(10,-1,10), mat, 0);
     plane.position.set(0,-1,0);
@@ -54,20 +55,11 @@ function createGeometry() {
     plane.__dirtyPosition = true;
     scene.add(plane);
 
-    createPhysicsObject(-2,0,0,"r");
-    createPhysicsObject(-0.67,0,0,"r");
-    createPhysicsObject(0.67,0,0,"r");
-    createPhysicsObject(2,0,0,"r");
-    createPhysicsObject(-1.33,1,0,"r");
-    createPhysicsObject(0,1,0,"r");
-    createPhysicsObject(1.33,1,0,"b");
-    createPhysicsObject(-0.67,2,0,"b");
-    createPhysicsObject(0.67,2,0,"b");
-    createPhysicsObject(0,3,0,"y");
+    readFile(3000, this.filename);
 }
 
 
- function createPhysicsObject(x, y, z, color = "r" ,friction = 0.3, restitution = 0.7, mass = 10) {
+ function createPhysicsObject(x, y, z, color = "r" ,friction = 0.3, restitution = 0.7, mass = 1) {
     var geom = new THREE.BoxGeometry(1, 1, 1);
     let mat;
     switch(color){
@@ -89,13 +81,13 @@ function createGeometry() {
     box.castShadow = true;
     box.receiveShadow = true;
     box.__dirtyRotation = true; 
+    box._dirtyRotation = true;
     boxes.push(box);
     scene.add(box);
 }
 
-function readFile(port, filename) {
-    let url = 'http://localhost:' + port + '/assets/games/' + filename + '.json';
-    console.log('URL_TEST ' + url);
+function readFile(port) {
+    let url = 'http://localhost:' + port + '/assets/game.json';
     let request = new XMLHttpRequest();
     request.open('GET', url);
     request.responseType = 'text';
@@ -103,12 +95,20 @@ function readFile(port, filename) {
 
     request.onload = () => {
         let data = request.responseText;
-        console.log(data);
-        //createGame(data)
         createGame(JSON.parse(data))
     }
-
 }
+function createGame(gameData){
+    boxes.forEach(box => {
+        scene.remove(box);
+    });
+    boxes=[];
+
+    for (let i = 0; i < gameData.length; i++) {
+        createPhysicsObject(gameData[i].x,gameData[i].y,gameData[i].z,gameData[i].color);
+    }
+}
+
 
 function onDocumentMouseDown( event ) {
     event.preventDefault();
@@ -118,6 +118,7 @@ function onDocumentMouseDown( event ) {
 
     if ( intersects.length > 0 ) {
         scene.remove(intersects[0].object);
+        score ++;
     }
 }
 
@@ -125,7 +126,6 @@ function setupDatGui() {
 
     var controls = new function () {
         this.port = 3000;
-        this.filename = 'file';
         this.CreateGame = function () {
             readFile(this.port, this.filename);
         }
@@ -133,20 +133,20 @@ function setupDatGui() {
     }
         var gui = new dat.GUI();
         gui.add(controls, 'port');
-        gui.add(controls, 'filename');
         gui.add(controls, 'CreateGame');    
 }
 
-function render() {
-/*
-    cubes.forEach(cube => { 
-        if(cube.box.position.y<0){
-            scene.remove(cube.box);
-            box.remove(cube);
+function boxFallCheck(){
+    boxes.forEach(box => { 
+        if(box.position.y<-1){
+            scene.remove(box);
         }
     });
-    */
+}
+
+function render() {
     scene.simulate(1,1);
+    boxFallCheck();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
 }
