@@ -8,7 +8,9 @@ var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 var controls,
     boxes = [],
-    score=0;
+    score=0
+    port=3000
+    gameSelect=1;
 
 function init() {
 
@@ -55,7 +57,7 @@ function createGeometry() {
     plane.__dirtyPosition = true;
     scene.add(plane);
 
-    readFile(3000, this.filename);
+    readFile(port, this.filename);
 }
 
 
@@ -87,7 +89,7 @@ function createGeometry() {
 }
 
 function readFile(port) {
-    let url = 'http://localhost:' + port + '/assets/game.json';
+    let url = 'http://localhost:' + port + '/assets/game'+this.gameSelect+'.json';
     let request = new XMLHttpRequest();
     request.open('GET', url);
     request.responseType = 'text';
@@ -125,14 +127,16 @@ function onDocumentMouseDown( event ) {
 function setupDatGui() {
 
     var controls = new function () {
-        this.port = 3000;
+        this.port = port;
+        this.gameSelect = gameSelect;
         this.CreateGame = function () {
             readFile(this.port, this.filename);
         }
     
     }
         var gui = new dat.GUI();
-        gui.add(controls, 'port');
+        gui.add(controls, 'port').onChange((x) => port = x);
+        gui.add(controls, 'gameSelect',1,5).step(1).onChange((x) => gameSelect = x);
         gui.add(controls, 'CreateGame');    
 }
 
