@@ -1,5 +1,10 @@
 Physijs.scripts.worker = 'libs/physijs_worker.js';
 Physijs.scripts.ammo = 'ammo.js';
+game1='assets/game1.json';
+game2='assets/game2.json';
+game3='assets/game3.json';
+game4='assets/game4.json';
+game5='assets/game5.json';
 
 const renderer = new THREE.WebGLRenderer();
 const scene = new Physijs.Scene();
@@ -9,6 +14,7 @@ var mouse = new THREE.Vector2();
 var controls,
     boxes = [],
     score=0,
+    scoreObj,
     port=8080,
     gameSelect=1;
 
@@ -57,7 +63,23 @@ function createGeometry() {
     plane.__dirtyPosition = true;
     scene.add(plane);
 
-    readFile(port, this.filename);
+    //attempt to show score
+    /*
+    var scoreGeo= new THREE.TextGeometry( "score: "+score+" ", {
+        font: font,
+        size: 5,
+        height: 1,
+        curveSegments: 12,
+        bevelThickness: 0.1,
+        bevelSize: 1,
+        bevelEnabled: true
+      });
+    scoreObj=new THREE.Mesh(scoreGeo,mat);
+    scoreObj.position.set(0,1,-10);
+    scene.add(score)
+    */
+
+    readFile();
 }
 
 
@@ -88,8 +110,11 @@ function createGeometry() {
     scene.add(box);
 }
 
-function readFile(port) {
-    let url = 'http://127.0.0.1:' + port + '/assets/game'+this.gameSelect+'.json';
+function readFile() {
+//attempting to read from json
+
+    /*
+    let url = 'http://localhost:' + port + '/assets/game'+this.gameSelect+'.json';
     let request = new XMLHttpRequest();
     request.open('GET', url);
     request.responseType = 'text';
@@ -98,14 +123,24 @@ function readFile(port) {
     request.onload = () => {
         let data = request.responseText;
         createGame(JSON.parse(data))
-    }
+    }*/
+
+    
+    
+   var a=[
+       {x:-1.67,y:1,z:0,color:"r"},
+       {x:0,y:1,z:0,color:"b"},
+       {x:1.67,y:1,z:0,color:"y"}
+   ]
+   createGame(a)
+   
 }
 function createGame(gameData){
     boxes.forEach(box => {
         scene.remove(box);
     });
     boxes=[];
-
+    score=0;
     for (let i = 0; i < gameData.length; i++) {
         createPhysicsObject(gameData[i].x,gameData[i].y,gameData[i].z,gameData[i].color);
     }
@@ -129,7 +164,7 @@ function setupDatGui() {
         this.port = port;;
         this.gameSelect = gameSelect;
         this.CreateGame = function () {
-            readFile(this.port, this.filename);
+            readFile();
         }
     
     }
@@ -144,13 +179,26 @@ function boxFallCheck(){
     boxes.forEach(box => { 
         if(box.position.y<-1){
             scene.remove(box);
+            score--;
         }
     });
+}
+
+function gameWinCheck(){
+    if(boxes.length==0){
+        if(score>0){
+            //win
+        }else{
+            //lose
+        }
+        readFile();
+    }
 }
 
 function render() {
     scene.simulate(1,1);
     boxFallCheck();
+    gameWinCheck();
     renderer.render(scene, camera);
     requestAnimationFrame(render);
 }
