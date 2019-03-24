@@ -11,7 +11,9 @@ var controls,
     score=0,
     scoreObj,
     port=8080,
-    gameSelect=1;
+    gameSelect=1,
+    canvas2,
+    textMesh;
 
 function init() {
 
@@ -55,24 +57,10 @@ function createGeometry() {
     var plane = new Physijs.BoxMesh (new THREE.BoxGeometry(10,-1,10), mat, 0);
     plane.position.set(0,-1,0);
     plane.receiveShadow = true;
-    plane.__dirtyPosition = true;
     scene.add(plane);
+    
 
-    //attempt to show score
-    /*
-    var scoreGeo= new THREE.TextGeometry( "score: "+score+" ", {
-        font: font,
-        size: 5,
-        height: 1,
-        curveSegments: 12,
-        bevelThickness: 0.1,
-        bevelSize: 1,
-        bevelEnabled: true
-      });
-    scoreObj=new THREE.Mesh(scoreGeo,mat);
-    scoreObj.position.set(0,1,-10);
-    scene.add(score)
-    */
+    updateText("score:"+score);
 
     readFile();
 }
@@ -99,8 +87,8 @@ function createGeometry() {
     box.position.set(x, y, z);
     box.castShadow = true;
     box.receiveShadow = true;
-    box.__dirtyRotation = true; 
-    box._dirtyRotation = true;
+    box.__dirtyPosition = true;
+    box.__dirtyRotation = true;
     boxes.push(box);
     scene.add(box);
 }
@@ -150,7 +138,13 @@ function onDocumentMouseDown( event ) {
 
     if ( intersects.length > 0 ) {
         scene.remove(intersects[0].object);
+        for( var i = 0; i < boxes.length; i++){ 
+            if ( boxes[i] === intersects[0].object) {
+                boxes.splice(i, 1); 
+            }
+         }
         score ++;
+        updateText("score:"+score);
     }
 }
 
@@ -174,7 +168,13 @@ function boxFallCheck(){
     boxes.forEach(box => { 
         if(box.position.y<-1){
             scene.remove(box);
+            for( var i = 0; i < boxes.length; i++){ 
+                if ( boxes[i] === box) {
+                    boxes.splice(i, 1); 
+                }
+             }
             score--;
+            updateText("score:"+score);
         }
     });
 }
@@ -182,12 +182,29 @@ function boxFallCheck(){
 function gameWinCheck(){
     if(boxes.length==0){
         if(score>0){
-            //win
+            updateText("you win");
         }else{
-            //lose
+            updateText("you lose");
         }
         readFile();
     }
+}
+
+function updateText(textt){
+    try{scene.remove(textMesh);}catch(error){}
+    canvas2 = document.createElement('canvas');
+	var context = canvas2.getContext('2d');
+	context.font = "Bold 50px Arial";
+	context.fillStyle = "rgba(255,255,255,1)";
+    canvas2.getContext('2d').fillText(textt, 0, 50);
+	var textTexture = new THREE.Texture(canvas2) 
+	textTexture.needsUpdate = true;
+    var textMaterial = new THREE.MeshBasicMaterial( {map: textTexture, side:THREE.DoubleSide } );
+    textMaterial.transparent = true;
+    textMesh = new THREE.Mesh(new THREE.PlaneGeometry(canvas2.width, canvas2.height),textMaterial);
+    textMesh.scale.set(0.02,0.02,0.02);
+    textMesh.position.set(-6,2,-2);
+	scene.add(textMesh);
 }
 
 function render() {
