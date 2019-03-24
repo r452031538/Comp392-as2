@@ -1,10 +1,5 @@
 Physijs.scripts.worker = 'libs/physijs_worker.js';
 Physijs.scripts.ammo = 'ammo.js';
-game1='assets/game1.json';
-game2='assets/game2.json';
-game3='assets/game3.json';
-game4='assets/game4.json';
-game5='assets/game5.json';
 
 const renderer = new THREE.WebGLRenderer();
 const scene = new Physijs.Scene();
@@ -50,7 +45,7 @@ function setupCameraAndLight() {
     directionalLight.shadow.mapSize.height = 2048;
     scene.add(directionalLight);
 
-    let hemiSphereLight = new THREE.HemisphereLight(0x7777cc, 0x00ff00, 0.6);//skycolor, groundcolor, intensity  
+    let hemiSphereLight = new THREE.HemisphereLight(0x7777cc, 0x00ff00, 0.6);  
     hemiSphereLight.position.set(0, 100, 0);
     scene.add(hemiSphereLight);
 }
@@ -83,24 +78,24 @@ function createGeometry() {
 }
 
 
- function createPhysicsObject(x, y, z, color = "r" ,friction = 0.3, restitution = 0.7, mass = 1) {
+ function createPhysicsObject(x, y, z, color = "r") {
     var geom = new THREE.BoxGeometry(1, 1, 1);
     let mat;
     switch(color){
          case "r":
-         mat = Physijs.createMaterial(new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: 0.9 }), friction, restitution);
+         mat = Physijs.createMaterial(new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: 0.9 }), Math.random(0,1), Math.random(0,1));
          break;
          case "b":
-         mat = Physijs.createMaterial(new THREE.MeshStandardMaterial({ color: 0x00ffff, transparent: true, opacity: 0.9 }), friction, restitution);
+         mat = Physijs.createMaterial(new THREE.MeshStandardMaterial({ color: 0x00ffff, transparent: true, opacity: 0.9 }), Math.random(0,1), Math.random(0,1));
          break;
          case "y":
-         mat = Physijs.createMaterial(new THREE.MeshStandardMaterial({ color: 0xffff00, transparent: true, opacity: 0.9 }), friction, restitution);
+         mat = Physijs.createMaterial(new THREE.MeshStandardMaterial({ color: 0xffff00, transparent: true, opacity: 0.9 }), Math.random(0,1), Math.random(0,1));
          break;
          default:
-         mat = Physijs.createMaterial(new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 }), friction, restitution);
+         mat = Physijs.createMaterial(new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 }), Math.random(0,1), Math.random(0,1));
          break;
     } 
-    let box = new Physijs.BoxMesh(geom, mat, mass);
+    let box = new Physijs.BoxMesh(geom, mat, 1);
     box.position.set(x, y, z);
     box.castShadow = true;
     box.receiveShadow = true;
