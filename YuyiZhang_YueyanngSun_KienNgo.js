@@ -24,7 +24,7 @@ function init() {
 
     scene.setGravity(new THREE.Vector3(0,-50,0));
     document.body.appendChild(renderer.domElement);
-    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+    document.addEventListener( 'mousedown', onDocumentMouseDown, false);
 }
 
 function setupCameraAndLight() {
@@ -131,7 +131,6 @@ function createGame(gameData){
 
 
 function onDocumentMouseDown( event ) {
-    event.preventDefault();
     mouse.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1 );
     raycaster.setFromCamera( mouse, camera );
     var intersects = raycaster.intersectObjects(boxes);
@@ -150,7 +149,7 @@ function onDocumentMouseDown( event ) {
 
 function setupDatGui() {
     var controls = new function () {
-        this.line1 = 'Hello';
+        this.port = '5500';
         this.gameSelect = gameSelect;
         this.CreateGame = function () {
             readFile();
@@ -159,10 +158,8 @@ function setupDatGui() {
     }
 
     const ports=[5500,8080];
-    parameters = {theText:"5500"};
-
         var gui = new dat.GUI();
-        gui.add(controls,'line1');
+        gui.add(controls,'port').onChange((x) => port = parseInt(x));
         // line1.onChange((x) => port = parseInt(x));
     // line1.onChange.onChange(function(newValue) {
     //         console.log("Value changed to:  ", newValue);
@@ -234,3 +231,5 @@ window.onload = () => {
     render();
 
 }
+
+
