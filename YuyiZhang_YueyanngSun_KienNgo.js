@@ -150,18 +150,28 @@ function onDocumentMouseDown( event ) {
 
 function setupDatGui() {
     var controls = new function () {
-        this.port = port;;
+        this.line1 = 'Hello';
         this.gameSelect = gameSelect;
         this.CreateGame = function () {
             readFile();
         }
     
     }
+
     const ports=[5500,8080];
+    parameters = {theText:"5500"};
+
         var gui = new dat.GUI();
-        gui.add(controls, 'port',ports).onChange((x) => port = parseInt(x));
-        gui.add(controls, 'gameSelect',1,5).step(1).onChange((x) => gameSelect = x);
-        gui.add(controls, 'CreateGame');    
+        gui.add(controls,'line1');
+        // line1.onChange((x) => port = parseInt(x));
+    // line1.onChange.onChange(function(newValue) {
+    //         console.log("Value changed to:  ", newValue);
+    //     });
+        // gui.add(controls, "text1").listen();
+        // gui.add(controls, 'port',ports).onChange((x) => port = parseInt(x));
+         gui.add(controls, 'gameSelect',1,5).step(1).onChange((x) => gameSelect = x);
+         gui.add(controls, 'CreateGame');   
+         
 }
 
 function boxFallCheck(){
