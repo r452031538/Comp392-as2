@@ -10,7 +10,7 @@ var controls,
     boxes = [],
     score=0,
     scoreObj,
-    port=8080,
+    port=5500,
     gameSelect=1,
     canvas2,
     textMesh;
@@ -94,18 +94,19 @@ function createGeometry() {
 }
 
 function readFile() {
-//attempting to read from json
-
-    
-    let url = 'http://localhost:' + port + '/assets/games/game'+this.gameSelect+'.json';
+    let url = '127.0.0.1:' + port + '/assets/games/game'+this.gameSelect+'.json';
     let request = new XMLHttpRequest();
     request.open('GET', url);
     request.responseType = 'text';
     request.send();
 
     request.onload = () => {
-        let data = request.responseText;
-        createGame(JSON.parse(data))
+        console.log(request.responseText);
+        //let data = JSON.parse(request.responseText);
+        //if (data) {
+        //    alert('Got data');
+        //}
+        //createGame(data);
     }
     
     /*
