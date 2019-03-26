@@ -96,7 +96,7 @@ function createGeometry() {
 function readFile() {
 //attempting to read from json
 
-    /*
+    
     let url = 'http://localhost:' + port + '/assets/games/game'+this.gameSelect+'.json';
     let request = new XMLHttpRequest();
     request.open('GET', url);
@@ -106,16 +106,16 @@ function readFile() {
     request.onload = () => {
         let data = request.responseText;
         createGame(JSON.parse(data))
-    }*/
-
+    }
     
-    
+    /*
    var a=[
        {x:-1.67,y:1,z:0,color:"r"},
        {x:0,y:1,z:0,color:"b"},
        {x:1.67,y:1,z:0,color:"y"}
    ]
    createGame(a)
+   */
    
 }
 function createGame(gameData){
@@ -157,15 +157,8 @@ function setupDatGui() {
     
     }
 
-    const ports=[5500,8080];
         var gui = new dat.GUI();
         gui.add(controls,'port').onChange((x) => port = parseInt(x));
-        // line1.onChange((x) => port = parseInt(x));
-    // line1.onChange.onChange(function(newValue) {
-    //         console.log("Value changed to:  ", newValue);
-    //     });
-        // gui.add(controls, "text1").listen();
-        // gui.add(controls, 'port',ports).onChange((x) => port = parseInt(x));
          gui.add(controls, 'gameSelect',1,5).step(1).onChange((x) => gameSelect = x);
          gui.add(controls, 'CreateGame');   
          
