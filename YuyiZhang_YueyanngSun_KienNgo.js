@@ -97,7 +97,7 @@ function readFile() {
 //attempting to read from json
 
     /*
-    let url = 'http://localhost:' + port + '/assets/game'+this.gameSelect+'.json';
+    let url = 'http://localhost:' + port + '/assets/games/game'+this.gameSelect+'.json';
     let request = new XMLHttpRequest();
     request.open('GET', url);
     request.responseType = 'text';
